@@ -1,0 +1,24 @@
+{
+  "name": "lagouwebapp",
+  "authors": [
+    "maxdosme <233705835@qq.com>"
+  ],
+  "description": "angularjs lagouwebapp",
+  "main": "",
+  "keywords": [
+    "angularjs"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.7",
+    "requirejs": "^2.3.5"
+  }
+}
