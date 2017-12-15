@@ -20,7 +20,9 @@ gulp.task('lib',function (){
 
     //  操作文件：写入文件
     .pipe(gulp.dest(app.devPath + 'vendor'))
-    .pipe(gulp.dest(app.prdPath + 'vendor'));
+    .pipe(gulp.dest(app.prdPath + 'vendor'))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 });
 
 //  创建html
@@ -29,7 +31,9 @@ gulp.task('html', function (){
 
     //  操作文件：写入文件
     .pipe(gulp.dest(app.devPath))
-    .pipe(gulp.dest(app.prdPath));
+    .pipe(gulp.dest(app.prdPath))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 })
 
 //  json数据（无后端）
@@ -39,7 +43,9 @@ gulp.task('json',function (){
 
     //  操作文件：写入文件
     .pipe(gulp.dest(app.devPath + 'data'))
-    .pipe(gulp.dest(app.prdPath + 'data'));
+    .pipe(gulp.dest(app.prdPath + 'data'))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 });
 
 //  css(less引入)
@@ -54,6 +60,8 @@ gulp.task('less', function (){
     //  用于生产环境时，需要压缩一下
     .pipe($.cssmin())
     .pipe(gulp.dest(app.prdPath + 'css'))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 });
 
 //  js
@@ -68,6 +76,8 @@ gulp.task('js', function (){
     .pipe($.uglify())
     //  发布到生产环境
     .pipe(gulp.dest(app.prdPath + 'js'))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 });
 
 //  img
@@ -79,6 +89,8 @@ gulp.task('img', function (){
     .pipe($.imagemin())
     //  发布
     .pipe(gulp.dest(app.prdPath + 'image'))
+    //  通知浏览器刷新（IE不支持）
+    .pipe($.connect.reload());
 });
 
 //  gulp总任务项目搭建
@@ -94,7 +106,7 @@ gulp.task('clean', function (){
 
 
 //  自动化服务器
-gulp.task('serve', function (){
+gulp.task('serve', ['build'], function (){
     //  启动服务器
     $.connect.server({
         root: [app.devPath],                  //  读取路径
@@ -103,4 +115,15 @@ gulp.task('serve', function (){
     });
     //  优化
     open('http://localhost:8081');          //  自动打开浏览器
+
+    //  文件监控：自动构建
+    gulp.watch('bower_components/**/*', ['lib']);
+    gulp.watch(app.srcPath + '**/*.html', ['html']);
+    gulp.watch(app.srcPath + 'data/**/*.json', ['json']);
+    gulp.watch(app.srcPath + 'style/**/*.less', ['less']);
+    gulp.watch(app.srcPath + 'script/**/*.js', ['js']);
+    gulp.watch(app.srcPath + 'image/**/*', ['img']);
 });
+
+//  修改gulp --> gulp serve
+gulp.task('default', ['serve']);
