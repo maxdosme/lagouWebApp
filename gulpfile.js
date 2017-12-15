@@ -55,3 +55,52 @@ gulp.task('less', function (){
     .pipe($.cssmin())
     .pipe(gulp.dest(app.prdPath + 'css'))
 });
+
+//  js
+gulp.task('js', function (){
+    gulp.src(app.srcPath + 'script/**/*.js')
+
+    //  合并文件生成index.js
+    .pipe($.concat('index.js'))
+    //  写入开发目录
+    .pipe(gulp.dest(app.devPath + 'js'))
+    //  发布到生产环境时，压缩文件
+    .pipe($.uglify())
+    //  发布到生产环境
+    .pipe(gulp.dest(app.prdPath + 'js'))
+});
+
+//  img
+gulp.task('img', function (){
+    gulp.src(app.srcPath + 'image/**/*')
+    //  放置到目标
+    .pipe(gulp.dest(app.devPath + 'image'))
+    //  压缩图片
+    .pipe($.imagemin())
+    //  发布
+    .pipe(gulp.dest(app.prdPath + 'image'))
+});
+
+//  gulp总任务项目搭建
+gulp.task('build', ['img', 'js', 'less', 'lib', 'html', 'json']);
+
+
+
+//  清除
+gulp.task('clean', function (){
+    gulp.src([app.devPath, app.prdPath])
+    .pipe($.clean());
+});
+
+
+//  自动化服务器
+gulp.task('serve', function (){
+    //  启动服务器
+    $.connect.server({
+        root: [app.devPath],                  //  读取路径
+        livereload: true,                      //  高级浏览器自动刷新功能(IE不支持)
+        port: 8081,                          //  端口
+    });
+    //  优化
+    open('http://localhost:8081');          //  自动打开浏览器
+});
